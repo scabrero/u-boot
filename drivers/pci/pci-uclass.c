@@ -4,6 +4,8 @@
  * Written by Simon Glass <sjg@chromium.org>
  */
 
+#define DEBUG
+
 #include <common.h>
 #include <dm.h>
 #include <errno.h>
@@ -808,13 +810,15 @@ int pci_bind_bus_devices(struct udevice *bus)
 		if (!PCI_FUNC(bdf))
 			found_multi = header_type & 0x80;
 
-		debug("%s: bus %d/%s: found device %x, function %d", __func__,
+		debug("%s: bus %d/%s: found device %x, function %d\n", __func__,
 		      bus->seq, bus->name, PCI_DEV(bdf), PCI_FUNC(bdf));
 		pci_bus_read_config(bus, bdf, PCI_DEVICE_ID, &device,
 				    PCI_SIZE_16);
 		pci_bus_read_config(bus, bdf, PCI_CLASS_REVISION, &class,
 				    PCI_SIZE_32);
 		class >>= 8;
+
+		debug("%s: class 0x%lx\n", __func__, class);
 
 		/* Find this device in the device tree */
 		ret = pci_bus_find_devfn(bus, PCI_MASK_BUS(bdf), &dev);
